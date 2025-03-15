@@ -1,5 +1,5 @@
 /*
- *  main.c
+ *  genpass.c
  *
  *  Copyright (C) 2025
 

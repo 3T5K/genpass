@@ -1,9 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Werror -Wpedantic -Wextra -O3
 TARGET = genpass
+SOURCE = genpass.c
 
 $(TARGET):
-	$(CC) $(CFLAGS) main.c -o $(TARGET)
+	$(CC) $(CFLAGS) $(SOURCE) -o $(TARGET)
 
 all: $(TARGET)
 
