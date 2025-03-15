@@ -19,6 +19,7 @@
 
 // TODO: remove bias in armorize
 // TODO: let user chose the characters to use (lower, upper, digits, special)
+// TODO: maybe add some -o <file> option
 
 #include <errno.h>
 #include <string.h>
@@ -57,7 +58,7 @@ void die(void) {
 
 size_t try_parse_num_arg() {
     char *endptr; errno = 0;
-    size_t val = strtoul(optarg, &endptr, 10);
+    const size_t val = strtoul(optarg, &endptr, 10);
     if (errno) {
         fprintf(stderr, "argument for '--length' out of range\n");
         die();
@@ -71,16 +72,14 @@ size_t try_parse_num_arg() {
     return val;
 }
 
-void armorize(uint8_t *buf, size_t sz) {
+void armorize(uint8_t *buf, const size_t sz) {
     for (size_t i = 0; i < sz; i++) {
         buf[i] = buf[i] % CHAR_AMOUNT + CHAR_OFFSET;
     }
 }
 
-void genpass() {}
-
-int main(int argc, char **argv) {
-    struct option opts[] = {
+int main(const int argc, char *const *const argv) {
+    const struct option opts[] = {
         {"help",   no_argument,       NULL, 'h'},
         {"random", no_argument,       NULL, 'r'},
         {"length", required_argument, NULL, 'n'},
@@ -104,7 +103,7 @@ int main(int argc, char **argv) {
         die();
     }
     
-    int rand_src = open(RANDFILE, O_RDONLY);
+    const int rand_src = open(RANDFILE, O_RDONLY);
     if (rand_src == -1) {
         fprintf(stderr, "failed to open %s\n", RANDFILE); 
         return EXIT_FAILURE;
@@ -119,7 +118,7 @@ int main(int argc, char **argv) {
             }
 
             armorize(buf, BUF_SIZE);
-            size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), stdout);
+            const size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), stdout);
             if (out != MIN(BUF_SIZE, pw_len - printed)) {
                 // arguably useless, but prevents hanging if that actually somehow fails...
                 fprintf(stderr, "failed to write to stdout\n");
@@ -128,6 +127,7 @@ int main(int argc, char **argv) {
 
             printed += out;
         }
+
         puts("");
     }
 
