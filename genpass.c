@@ -19,7 +19,6 @@
 
 // TODO: remove bias in armorize
 // TODO: let user chose the characters to use (lower, upper, digits, special)
-// TODO: maybe add some -o <file> option
 
 #include <errno.h>
 #include <string.h>
@@ -36,20 +35,22 @@
 #define CHAR_AMOUNT (uint8_t)94
 #define UPPER_BOUND 100 * 1000
 #define BUF_SIZE 50 * 1000
-const char *RANDFILE = "/dev/urandom";
-const char *HELP =
-    "This simple utility generates random passwords\n"
-    "in ascii armor from /dev/urandom.\n"
+const char *RANDFILE   = "/dev/urandom";
+const char *const HELP =
+    "This simple utility generates random passwords in\n"
+    "ascii armor from /dev/urandom.\n"
     "\n"
     "USAGE: genpass [OPTIONS]...\n"
-    "OPTIONS:\n"
-    "    -h, --help   show this message\n"
-    "    -r, --random use /dev/random instead\n"
-    "    -n, --length password length (def: 30)\n"
-    "    -c, --count  amount of passwords (def: 1)\n"
     "\n"
-    "The argument to '--length' has an upper bound\n"
-    "of 100,000.\n";
+    "OPTIONS:\n"
+    "    -h, --help          show this message\n"
+    "    -r, --random        use /dev/random instead\n"
+    "    -n, --length <NUM>  password length (def: 30)\n"
+    "    -c, --count  <NUM>  amount of passwords (def: 1)\n"
+    "    -o, --out    <PATH> file to write to (def: stdout)\n";
+    // "\n"
+    // "The argument to '--length' or '--count' has an\n"
+    // "upper bound of (size_t)-1.\n";
 
 void die(void) {
     fprintf(stderr, "try running with '--help' or '-h' for more info\n");
@@ -84,14 +85,16 @@ int main(const int argc, char *const *const argv) {
         {"random", no_argument,       NULL, 'r'},
         {"length", required_argument, NULL, 'n'},
         {"count",  required_argument, NULL, 'c'},
+        {"out",    required_argument, NULL, 'o'},
         {NULL,     0,                 NULL, 0  }
     };
 
-    size_t pw_len = 30, pw_count = 1; int opt;
-    while ((opt = getopt_long(argc, argv, "hrn:c:", opts, NULL)) != -1) {
+    size_t pw_len = 30, pw_count = 1; const char *dst_path = NULL; int opt;
+    while ((opt = getopt_long(argc, argv, "hrn:c:o:", opts, NULL)) != -1) {
         switch (opt) {
             case 'h': printf("%s", HELP);             return EXIT_SUCCESS;
             case 'r': RANDFILE = "/dev/random";       break;
+            case 'o': dst_path = optarg;              break;
             case 'n': pw_len = try_parse_num_arg();   break;
             case 'c': pw_count = try_parse_num_arg(); break;
             default: die();
@@ -109,6 +112,13 @@ int main(const int argc, char *const *const argv) {
         return EXIT_FAILURE;
     }
 
+    FILE *const f_out = (dst_path) ? fopen(dst_path, "w") : stdout;
+    if (!f_out) {
+        fprintf(stderr, "fopen(\"%s\", \"w\"): ", dst_path);
+        perror("");
+        return EXIT_FAILURE;
+    }
+
     static uint8_t buf[BUF_SIZE] = {0};
     for (size_t pw = 0; pw < pw_count; pw++) {
         for (size_t printed = 0; printed != pw_len;) {
@@ -118,17 +128,19 @@ int main(const int argc, char *const *const argv) {
             }
 
             armorize(buf, BUF_SIZE);
-            const size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), stdout);
+            const size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), f_out);
             if (out != MIN(BUF_SIZE, pw_len - printed)) {
-                // arguably useless, but prevents hanging if that actually somehow fails...
-                fprintf(stderr, "failed to write to stdout\n");
+                fprintf(stderr, "failed to write to %s\n", dst_path);
                 return EXIT_FAILURE;
             }
 
             printed += out;
         }
 
-        puts("");
+        if (putc('\n', f_out) == EOF) {
+            fprintf(stderr, "failed to write to %s\n", dst_path);
+            return EXIT_FAILURE;
+        };
     }
 
     return EXIT_SUCCESS;
