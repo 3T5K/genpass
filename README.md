@@ -1,7 +1,7 @@
 # genpass
 
 genpass is a very simple password generator written in C.
-It reads *N* bytes from `/dev/(u)random` and outputs it in a human-readable form.
+It reads *N* bytes from */dev/(u)random* and outputs it in a human-readable form.
 
 # Installation
 
