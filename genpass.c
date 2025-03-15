@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
             armorize(buf, BUF_SIZE);
             size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), stdout);
             if (out != MIN(BUF_SIZE, pw_len - printed)) {
-                    // arguably useless, but prevents hanging if that actually somehow fails...
+                // arguably useless, but prevents hanging if that actually somehow fails...
                 fprintf(stderr, "failed to write to stdout\n");
                 return EXIT_FAILURE;
             }
