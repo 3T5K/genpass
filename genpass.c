@@ -90,17 +90,6 @@ size_t try_parse_num_arg() {
     return val;
 }
 
-void armorize(
-    uint8_t           *buf,
-    const size_t      sz,
-    const char *const charset,
-    const size_t      c_len
-) {
-    for (size_t i = 0; i < sz; i++) {
-        buf[i] = charset[buf[i] % c_len];
-    }
-}
-
 int main(const int argc, char *const *const argv) {
     const struct option opts[] = {
         {"help",    no_argument,       NULL, 'h'},
@@ -177,7 +166,10 @@ int main(const int argc, char *const *const argv) {
                 return EXIT_FAILURE;
             }
 
-            armorize(buf, BUF_SIZE, charset, c_len);
+            for (size_t i = 0; i < BUF_SIZE; i++) {
+                buf[i] = charset[buf[i] % c_len];
+            }
+
             const size_t w = write(fd_dst, buf, MIN(BUF_SIZE, pw_len - written));
             if (w != MIN(BUF_SIZE, pw_len - written)) {
                 fprintf(stderr, "failed to write to %s\n", p_dst);
