@@ -14,8 +14,8 @@ It reads data from */dev/(u)random* and outputs it in a human-readable form.
   - Special characters
   - Digits
   - Any combination of the above
-  - 64 characters (no modulo bias)
-- No bias rejection.
+  - 64 characters (for no modulo bias)
+- No rejection sampling.
 
 # Installation
 

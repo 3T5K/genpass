@@ -67,7 +67,7 @@ const char *const HELP =
     "By default, the flags '-u', '-l', '-s', and '-d' are enabled.\n"
     "If any of these flags (including '-f') is used, only the specified\n"
     "characters will be included in the output.\n"
-    "Bias rejection is not performed. For unbiased output, use '--fair'.\n";
+    "Rejection sampling is not performed. For unbiased output, use '--fair'.\n";
 
 void die(void) {
     fprintf(stderr, "try running with '--help' or '-h' for more info\n");
