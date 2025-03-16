@@ -37,7 +37,7 @@
 #define C_DIGT "0123456789"
 #define C_SPEC "`~!@#$%^&*()_-+={}[]:;'\"\\|/?.>,<"
 #define C_FULL C_UPPR C_LOWR C_DIGT C_SPEC
-#define C_FAIR C_UPPR C_LOWR C_DIGT ":@"
+#define C_FAIR C_UPPR C_LOWR C_DIGT "&@"
 #define C_FULL_COUNT (uint8_t)94
 #define M_DFLT 0  // 0b00000000
 #define M_SPEC 1  // 0b00000001
@@ -147,7 +147,7 @@ int main(const int argc, char *const *const argv) {
     c_len = strlen(charset);
     const int fd_rng = open(P_RNG, O_RDONLY);
     if (fd_rng == -1) {
-        fprintf(stderr, "failed to open %s\n", P_RNG); 
+        fprintf(stderr, "failed to open \"%s\"\n", P_RNG); 
         return EXIT_FAILURE;
     }
 
@@ -159,10 +159,10 @@ int main(const int argc, char *const *const argv) {
     }
 
     static uint8_t buf[BUF_SIZE] = {0};
-    for (size_t pw = 0; pw < pw_count; pw++) {
+    for (size_t password = 0; password < pw_count; password++) {
         for (size_t written = 0; written != pw_len;) {
             if (read(fd_rng, buf, BUF_SIZE) != BUF_SIZE) {
-                fprintf(stderr, "failed to read %i bytes from %s\n", BUF_SIZE, P_RNG);
+                fprintf(stderr, "failed to read %i bytes from \"%s\"\n", BUF_SIZE, P_RNG);
                 return EXIT_FAILURE;
             }
 
@@ -172,7 +172,7 @@ int main(const int argc, char *const *const argv) {
 
             const size_t w = write(fd_dst, buf, MIN(BUF_SIZE, pw_len - written));
             if (w != MIN(BUF_SIZE, pw_len - written)) {
-                fprintf(stderr, "failed to write to %s\n", p_dst);
+                fprintf(stderr, "failed to write to \"%s\"\n", p_dst);
                 return EXIT_FAILURE;
             }
 
@@ -180,7 +180,7 @@ int main(const int argc, char *const *const argv) {
         }
 
         if (write(fd_dst, "\n", 1) != 1) {
-            fprintf(stderr, "failed to write to %s\n", p_dst);
+            fprintf(stderr, "failed to write to \"%s\"\n", p_dst);
             return EXIT_FAILURE;
         };
     }
