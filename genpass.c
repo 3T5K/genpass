@@ -112,9 +112,9 @@ int main(const int argc, char *const *const argv) {
         return EXIT_FAILURE;
     }
 
-    FILE *const f_out = (dst_path) ? fopen(dst_path, "w") : stdout;
-    if (!f_out) {
-        fprintf(stderr, "fopen(\"%s\", \"w\"): ", dst_path);
+    const int f_out = (dst_path) ? open(dst_path, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR) : STDOUT_FILENO;
+    if (f_out == -1) {
+        fprintf(stderr, "failed to open \"%s\": ", dst_path);
         perror("");
         return EXIT_FAILURE;
     }
@@ -128,7 +128,7 @@ int main(const int argc, char *const *const argv) {
             }
 
             armorize(buf, BUF_SIZE);
-            const size_t out = fwrite(buf, sizeof(uint8_t), MIN(BUF_SIZE, pw_len - printed), f_out);
+            const size_t out = write(f_out, buf, MIN(BUF_SIZE, pw_len - printed));
             if (out != MIN(BUF_SIZE, pw_len - printed)) {
                 fprintf(stderr, "failed to write to %s\n", dst_path);
                 return EXIT_FAILURE;
@@ -137,7 +137,7 @@ int main(const int argc, char *const *const argv) {
             printed += out;
         }
 
-        if (putc('\n', f_out) == EOF) {
+        if (write(f_out, "\n", 1) != 1) {
             fprintf(stderr, "failed to write to %s\n", dst_path);
             return EXIT_FAILURE;
         };
