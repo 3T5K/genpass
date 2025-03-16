@@ -141,10 +141,10 @@ int main(const int argc, char *const *const argv) {
     } else if (c_mask == M_FAIR) {
         strcpy(charset, C_FAIR);
     } else {
-        if (c_mask & M_UPPR) { strcat(charset, C_UPPR);   }
-        if (c_mask & M_LOWR) { strcat(charset, C_LOWR);   }
+        if (c_mask & M_UPPR) { strcat(charset, C_UPPR); }
+        if (c_mask & M_LOWR) { strcat(charset, C_LOWR); }
         if (c_mask & M_SPEC) { strcat(charset, C_SPEC); }
-        if (c_mask & M_DIGT) { strcat(charset, C_DIGT);  }
+        if (c_mask & M_DIGT) { strcat(charset, C_DIGT); }
     }
 
     c_len = strlen(charset);
