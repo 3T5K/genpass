@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO: remove bias in armorize
+// TODO: remove bias in the armorization
 
 #include <errno.h>
 #include <string.h>
