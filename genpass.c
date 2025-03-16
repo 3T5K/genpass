@@ -47,10 +47,10 @@
 #define M_FAIR 16 // 0b00010000
 const char *P_RNG      = "/dev/urandom";
 const char *const HELP =
-    "This simple utility generates random passwords in ASCII armor\n"
-    "using data from /dev/urandom.\n"
+    "This simple utility generates random passwords in ASCII\n"
+    "armor using data from /dev/urandom.\n"
     "\n"
-    "USAGE: genpass [OPTIONS]...\n"
+    "USAGE: genpass [OPTIONS]\n"
     "\n"
     "OPTIONS:\n"
     "    -h, --help           show this message\n"
@@ -64,10 +64,12 @@ const char *const HELP =
     "    -d, --digits         use digits\n"
     "    -f, --fair           use a 64 character charset\n"
     "\n"
-    "By default, the flags '-u', '-l', '-s', and '-d' are enabled.\n"
-    "If any of these flags (including '-f') is used, only the specified\n"
-    "characters will be included in the output.\n"
-    "Rejection sampling is not performed. For unbiased output, use '--fair'.\n";
+    "By default, the flags '-u', '-l', '-s', and '-d' are\n"
+    "enabled. If any of these flags (including '-f') is used,\n"
+    "only the specified characters will be included in the\n"
+    "output.\n"
+    "Rejection sampling is not performed. For unbiased output,\n"
+    "use '--fair'.\n";
 
 void die(void) {
     fprintf(stderr, "try running with '--help' or '-h' for more info\n");
