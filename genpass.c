@@ -162,8 +162,24 @@ int main(const int argc, char *const *const argv) {
     }
 
     static uint8_t buf[BUF_SIZE] = {0};
-    for (size_t password = 0; password < pw_count; password++) {
-        for (size_t written = 0; written != pw_len;) {
+    for (size_t cur  = BUF_SIZE,
+                writ = 0,
+                pw   = 0;;) {
+        // fprintf(stderr, "[-- iter --]\n");
+        // if (cur == BUF_SIZE && !(cur = 0) && read(fd_rng, buf, BUF_SIZE) != BUF_SIZE) {
+        //     fprintf(stderr, "failed to read %i bytes from \"%s\"\n", BUF_SIZE, P_RNG);
+        //     return EXIT_FAILURE;
+        // }
+        if (pw == pw_count) {
+            // fprintf(stderr, "[table]\n\tpw: %lu\n\tcur: %lu\n\twrit: %lu\n[end]\n", pw, cur, writ);
+            // fputs("pw", stderr);
+            break;
+        }
+
+        if (cur == BUF_SIZE) {
+            // fprintf(stderr, "cur\n");
+            // fprintf(stderr, "[table]\n\tpw: %lu\n\tcur: %lu\n\twrit: %lu\n[end]\n", pw, cur, writ);
+            cur = 0;
             if (read(fd_rng, buf, BUF_SIZE) != BUF_SIZE) {
                 fprintf(stderr, "failed to read %i bytes from \"%s\"\n", BUF_SIZE, P_RNG);
                 return EXIT_FAILURE;
@@ -172,7 +188,34 @@ int main(const int argc, char *const *const argv) {
             for (size_t i = 0; i < BUF_SIZE; i++) {
                 buf[i] = charset[buf[i] % c_len];
             }
+        }
 
+        const size_t w = write(fd_dst, buf + cur, MIN(BUF_SIZE - cur, pw_len - writ));
+        if (w != MIN(BUF_SIZE - cur, pw_len - writ)) {
+            fprintf(stderr, "failed to write to \"%s\"\n", p_dst);
+            return EXIT_FAILURE;
+        }
+
+        writ += w; cur += w;
+
+        if (writ == pw_len) {
+            // fprintf(stderr, "writ\n");
+            // fprintf(stderr, "[table]\n\tpw: %lu\n\tcur: %lu\n\twrit: %lu\n[end]\n", pw, cur, writ);
+            writ = 0; ++pw;
+            if (write(fd_dst, "\n", 1) != 1) {
+                fprintf(stderr, "failed to write to \"%s\"\n", p_dst);
+                return EXIT_FAILURE;
+            };
+        }
+
+        // fprintf(stderr, "[-- iter end --]\n");
+        // fprintf(stderr, "\tpw: %lu\n\tcur: %lu\n\twrit: %lu\n", pw, cur, writ);
+    }
+
+
+    return 0;
+    for (size_t password = 0; password < pw_count; password++) {
+        for (size_t written = 0; written != pw_len;) {
             const size_t w = write(fd_dst, buf, MIN(BUF_SIZE, pw_len - written));
             if (w != MIN(BUF_SIZE, pw_len - written)) {
                 fprintf(stderr, "failed to write to \"%s\"\n", p_dst);
