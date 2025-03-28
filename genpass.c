@@ -18,7 +18,7 @@
  */
 
 // TODO: remove bias in the armorization
-// TODO: optimize buffer usage when generating multiple short passwords
+// TODO: optimize writes
 
 #include <errno.h>
 #include <string.h>
