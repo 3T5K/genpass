@@ -77,7 +77,7 @@ void die(void) {
     exit(EXIT_FAILURE);
 }
 
-size_t try_parse_num_arg() {
+size_t try_parse_num_arg(void) {
     char *end; errno = 0;
     const size_t val = strtoul(optarg, &end, 10);
     if (errno) {
