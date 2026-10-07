@@ -47,6 +47,7 @@
 #define M_DIGT 8  // 0b00001000
 #define M_FAIR 16 // 0b00010000
 const char *P_RNG      = "/dev/urandom";
+const char *const VER  = "genpass-1.0.0";
 const char *const HELP =
     "This simple utility generates random passwords in ASCII\n"
     "armor using data from /dev/urandom.\n"
@@ -55,6 +56,7 @@ const char *const HELP =
     "\n"
     "OPTIONS:\n"
     "    -h, --help           show this message\n"
+    "    -v, --version        show version\n"
     "    -r, --random         use /dev/random instead\n"
     "    -n, --length  <NUM>  password length (def: 30)\n"
     "    -c, --count   <NUM>  amount of passwords (def: 1)\n"
@@ -96,6 +98,7 @@ size_t try_parse_num_arg(void) {
 int main(const int argc, char *const *const argv) {
     const struct option opts[] = {
         {"help",    no_argument,       NULL, 'h'},
+        {"version", no_argument,       NULL, 'v'},
         {"random",  no_argument,       NULL, 'r'},
         {"length",  required_argument, NULL, 'n'},
         {"count",   required_argument, NULL, 'c'},
@@ -115,9 +118,10 @@ int main(const int argc, char *const *const argv) {
     int         c_mask                    = M_DFLT;
     size_t      c_len;
     int         opt;
-    while ((opt = getopt_long(argc, argv, "hrn:c:o:ulsdf", opts, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hvrn:c:o:ulsdf", opts, NULL)) != -1) {
         switch (opt) {
             case 'h': printf("%s", HELP);             return EXIT_SUCCESS;
+            case 'v': printf("%s\n", VER);            return EXIT_SUCCESS;
             case 'r': P_RNG = "/dev/random";          break;
             case 'o': p_dst = optarg;                 break;
             case 'n': pw_len = try_parse_num_arg();   break;
