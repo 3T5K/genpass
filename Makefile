@@ -13,10 +13,10 @@ SOURCE := $(TARGET).c
 DIST   := $(TARGET)-$(VERSION)
 PREFIX ?= /usr/local
 
+all: $(TARGET)
+
 $(TARGET): $(SOURCE)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCE) -o $(TARGET)
-
-all: $(TARGET)
 
 clean:
 	rm -f $(TARGET)
