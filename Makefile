@@ -2,11 +2,11 @@ VERSION := 1.0.2
 
 CC ?= cc
 
-CFLAGS ?= -Werror -O3
-CFLAGS += -Wall -Wpedantic -Wextra
+         CFLAGS ?= -Werror -O3
+override CFLAGS += -Wall -Wpedantic -Wextra
 
-CPPFLAGS ?=
-CPPFLAGS += -DPRJVER=\"$(VERSION)\"
+         CPPFLAGS ?=
+override CPPFLAGS += -DPRJVER=\"$(VERSION)\"
 
 TARGET := genpass
 SOURCE := $(TARGET).c
@@ -34,3 +34,4 @@ dist:
 	rm -rf $(DIST)
 
 .PHONY: all clean install uninstall dist
+.DEFAULT_GOAL := all
