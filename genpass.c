@@ -31,6 +31,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#ifndef PRJVER
+#  define PRJVER "x.x.x"
+#endif
 #define MIN(a, b) ((a < b) ? a : b)
 #define BUF_SIZE 50 * 1000
 #define C_UPPR "abcdefghijklmnopqrstuvwxyz"
@@ -47,7 +50,7 @@
 #define M_DIGT 8  // 0b00001000
 #define M_FAIR 16 // 0b00010000
 const char *P_RNG      = "/dev/urandom";
-const char *const VER  = "genpass-1.0.0";
+const char *const VER  = "genpass-"PRJVER;
 const char *const HELP =
     "This simple utility generates random passwords in ASCII\n"
     "armor using data from /dev/urandom.\n"

@@ -1,14 +1,20 @@
-VERSION := 1.0.0
-TARGET  := genpass
-SOURCE  := $(TARGET).c
-DIST    := $(TARGET)-$(VERSION)
-PREFIX  ?= /usr/local
-CC      ?= cc
-CFLAGS  ?= -Werror -O3
-CFLAGS  += -Wall -Wpedantic -Wextra
+VERSION := 1.0.2
+
+CC ?= cc
+
+CFLAGS ?= -Werror -O3
+CFLAGS += -Wall -Wpedantic -Wextra
+
+CPPFLAGS ?=
+CPPFLAGS += -DPRJVER=\"$(VERSION)\"
+
+TARGET := genpass
+SOURCE := $(TARGET).c
+DIST   := $(TARGET)-$(VERSION)
+PREFIX ?= /usr/local
 
 $(TARGET): $(SOURCE)
-	$(CC) $(CFLAGS) $(SOURCE) -o $(TARGET)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCE) -o $(TARGET)
 
 all: $(TARGET)
 
